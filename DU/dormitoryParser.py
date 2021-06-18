@@ -1,6 +1,7 @@
 import logging
 import requests
 from bs4 import BeautifulSoup
+import json
 
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.152 Safari/537.36",
@@ -30,6 +31,8 @@ def content_get_list(url, page):
         return[]
 
 
+# **parser url, page
 # content_get_list(url, page)
 # url = "https://dorm.daegu.ac.kr/hakgwa_home/dorm/mobile/sub.php?menu=page&menu_id="
 # page = "32, 33, 29, 1042"
+# json.dump(current_list, open("../data/resident.json", "w", encoding="utf-8"), ensure_ascii=False)

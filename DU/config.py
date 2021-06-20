@@ -1,11 +1,17 @@
 import json
 
+def get_config():
+    return json.load(open("../data/config.json", "r", encoding="utf-8"))
+
+#일반공지
 def get_general():
     return json.load(open("../data/general.json", "r", encoding="utf-8"))
 
+#자치회
 def get_resident():
     return json.load(open("../data/resident.json", "r", encoding="utf-8"))
 
+#입퇴사
 def get_resignation():
     return json.load(open("../data/resignation.json", "r", encoding="utf-8"))
 

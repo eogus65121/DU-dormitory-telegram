@@ -9,8 +9,9 @@ headers = {
     "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
 }
 
-def content_get_list(url, page):
+def content_get_list(page):
     link = "https://dorm.daegu.ac.kr/hakgwa_home/dorm/mobile/sub.php"
+    url = "https://dorm.daegu.ac.kr/hakgwa_home/dorm/mobile/sub.php?menu=page&menu_id="
     try:
         r = requests.get(url+page)
         r.encoding = 'utf-8'

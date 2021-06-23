@@ -14,41 +14,52 @@ def send_telegram(data):
         content = data[0]
         url = data[1]
         send_message(config, content, url)
-        logging.info("data send success")
+        print("data send success")
     except Exception as e:
-        logging.error(e)
+        print(e)
     pass
 
 
-def parser():
+def parser(firstrun):
     page = [32, 33, 29]
     config = get_config()
     current_data = []
     
     if os.path.exists("../data/dormitory.json"):
         stored_data = json.load(open("../data/dormitory.json", "r", encoding="utf-8"))
+        print("json load success...")
 
-    logging.info("parser start...")
+    print("parser start...")
 
     for page_num in page:
         current_data = current_data + content_get_list(str(page_num))
         time.sleep(randint(1, 3))
 
-    logging.info("parser end...")
+    print("parser end...")
 
-    logging.info("compare start...")
+    print("compare start...")
 
     for c_data in current_data:
         if c_data not in stored_data:
             send_telegram(c_data)
-            logging.info("send_telegram success waiting 3sec...")
+            print("send_telegram success waiting 3sec...")
             time.sleep(3)
 
-    logging.info("compare end waiting 10sec...")
+    print("compare end waiting 10sec...")
     time.sleep(10)
     
-    logging.info("dormitory.json dump start...")
+    print("dormitory.json dump start...")
     json.dump(current_data, open("../data/dormitory.json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
-    logging.info("dump end...")
+    print("dump end...")
 
-parser()
+
+def main():
+    firstrun = False
+    parser(firstrun)
+    time.sleep(10)
+
+if __name__ == "__main__":
+    #while True:
+    #    main()
+    #    time.sleep(randint(500, 600))
+    main()

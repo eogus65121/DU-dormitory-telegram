@@ -13,7 +13,10 @@ def send_telegram(data):
         config = get_config()
         content = data[0]
         url = data[1]
-        send_message(config, content, url)
+        user_data = get_user()
+        for i in user_data['user']:
+            chat_id = i['chat_id']
+        send_message(chat_id, config, content, url)
         print("data send success")
     except Exception as e:
         print(e)

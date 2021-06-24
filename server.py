@@ -29,7 +29,7 @@ def parser(firstrun):
     current_data = []
     
     if os.path.exists("../data/dormitory.json"):
-        stored_data = json.load(open("../data/dormitory.json", "r", encoding="utf-8"))
+        stored_data = get_dormitory()
         print("json load success...")
 
     print("parser start...")

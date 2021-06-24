@@ -25,13 +25,12 @@ def start(update: Update, context: CallbackContext):
 def DU_main(update:Update, context: CallbackContext):
     chat_id = update.message.chat.id
 
-    #상대경로 지정예정
-    user_data = json.load(open("C://Users/USER/GitHub/data/user.json", "r", encoding="utf-8"))
+    user_data = json.load(open("../data/user.json", "r", encoding="utf-8"))
     print("user_data load success...")
 
     user_data['user'].append({"chat_id":chat_id})
 
-    json.dump(user_data, open("C://Users/USER/GitHub/data/user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
+    json.dump(user_data, open("../data/user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
     print("user_data dump success...")
 
     reply_text = "자동 공지 서비스가 시작되었습니다. \n 게시판에 새로운 글이 업로드 시 알림이 전송됩니다." 

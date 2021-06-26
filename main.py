@@ -18,11 +18,12 @@ from telegram.ext import (
     CallbackContext,
 )
 
+# telegram bot 첫 시작 /start command handler
 def start(update: Update, context: CallbackContext):
     reply_text = "반갑습니다. 대구대학교 기숙사 공지 알리미 입니다. \n 자동공지 시작 을 입력해주세요"
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
 
-
+# 기존 chat_id가 데이터에 저장되어 있는지 확인
 def check_user(chat_id, user_data):
     flag = True
     for comp_user in user_data['user']:
@@ -34,7 +35,7 @@ def check_user(chat_id, user_data):
 
     return flag
 
-
+# 자동공지 서비스 시작 command handler
 def DU_main(update:Update, context: CallbackContext):
     chat_id = update.message.chat.id
 

@@ -6,9 +6,9 @@ import json
 from random import randint
 from DU.config import *
 from DU.dormitoryParser import content_get_list
-from DU.telegram_send import send_message
+from DU.telegram_send import telegram_send_message_url, telegram_send_message
 
-def send_telegram(data):
+def server_send_telegram(data):
     try:
         config = get_config()
         content = data[0]
@@ -16,7 +16,21 @@ def send_telegram(data):
         user_data = get_user()
         for i in user_data['user']:
             chat_id = i['chat_id']
-        send_message(chat_id, config, content, url)
+            print(chat_id)
+            telegram_send_message_url(chat_id, config, content, url)
+        print("data send success")
+    except Exception as e:
+        print(e)
+    pass
+
+
+def server_notice_echo(data):
+    try:
+        config = get_config()
+        user_data = get_user()
+        for i in user_data['user']:
+            chat_id = i['chat_id']
+        telegram_send_message(chat_id, config, data)
         print("data send success")
     except Exception as e:
         print(e)
@@ -44,7 +58,7 @@ def parser(firstrun):
 
     for c_data in current_data:
         if c_data not in stored_data:
-            send_telegram(c_data)
+            server_send_telegram(c_data)
             print("send_telegram success waiting 3sec...")
             time.sleep(3)
 

@@ -18,10 +18,15 @@ from telegram.ext import (
     CallbackContext,
 )
 
+reply_start = [['챗봇시작']]
+
+markup_start = ReplyKeyboardMarkup(reply_start, one_time_keyboard=True)
+
 # telegram bot 첫 시작 /start command handler
 def start(update: Update, context: CallbackContext):
-    reply_text = "반갑습니다. 대구대학교 기숙사 공지 알리미 입니다. \n 자동공지 시작 을 입력해주세요"
+    reply_text = "반갑습니다. 대구대학교 기숙사 공지 알리미 입니다. \n '챗봇시작' 버튼 선택 혹은 '챗봇시작'을 입력해주세요"
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+    update.message.reply_text(reply_text, reply_markup=markup_start)
 
 # 기존 chat_id가 데이터에 저장되어 있는지 확인
 def check_user(chat_id, user_data):
@@ -65,7 +70,7 @@ def main():
 
     start_handler = CommandHandler('start', start)
 
-    message_handler = MessageHandler(Filters.regex('^자동공지 시작$'), DU_main)
+    message_handler = MessageHandler(Filters.regex('^챗봇시작$'), DU_main)
 
     dispatcher.add_handler(start_handler)
     dispatcher.add_handler(message_handler)

@@ -30,7 +30,7 @@ def server_notice_echo(data):
         user_data = get_user()
         for i in user_data['user']:
             chat_id = i['chat_id']
-        telegram_send_message(chat_id, config, data)
+            telegram_send_message(chat_id, config, data)
         print("data send success")
     except Exception as e:
         print(e)

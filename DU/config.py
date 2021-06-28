@@ -14,3 +14,7 @@ def get_dormitory():
 # user data
 def get_user():
     return json.load(open("../data/user.json", "r", encoding="utf-8"))
+
+# admin user data
+def get_admin():
+    return json.load(open("../data/admin_user.json", "r", encoding="utf-8"))

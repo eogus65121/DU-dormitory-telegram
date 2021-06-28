@@ -49,7 +49,7 @@ def check_user(chat_id, user_data):
 
     return flag
 
-
+# 관리자 기능 실행 시 권한 파악
 def check_admin(chat_id, user_data):
     flag = False
     for comp_user in user_data['admin_user']:
@@ -61,25 +61,25 @@ def check_admin(chat_id, user_data):
 
     return flag
 
-
+# 공지 echo 메시지 전송
 def echo_notice(update:Update, context: CallbackContext) -> int:
     user_text = update.message.text
     print(user_text)
     server_notice_echo(user_text)
     return ConversationHandler.END
 
-
+# 공지 기능 시작
 def notice_task(update:Update, context: CallbackContext) -> int:
     reply_text = "전체공지 기능입니다. 내용 입력 시 모든 사용자에게 전송 후 관리자 기능이 자동 종료됩니다."
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
 
-
+# 관리자 기능 선택
 def choice_func(update:Update, context: CallbackContext) -> int:
     reply_text = "원하는 기능을 선택해주세요"
     update.message.reply_text(reply_text, reply_markup=markup_function_choice)
     return TYPING_FUNC
 
-
+# 관리자 기능 실행
 def task(update:Update, context: CallbackContext) -> int:
     reply_text1 = "관리자 기능입니다."
     chat_id = update.message.chat_id
@@ -96,7 +96,7 @@ def task(update:Update, context: CallbackContext) -> int:
         context.bot.send_message(chat_id=update.effective_chat.id, text = reply_text2)
         return ConversationHandler.END
 
-
+# conversation handler 종료
 def done(update: Update, context: CallbackContext) -> int:
     reply_text = "관리자 기능 종료"
     context.bot.send_message(chat_id=update.effective_chat.id, text = reply_text)

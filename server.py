@@ -8,6 +8,18 @@ from DU.config import *
 from DU.dormitoryParser import content_get_list
 from DU.telegram_send import telegram_send_message_url, telegram_send_message
 
+def check_admin(chat_id, user_data):
+    flag = False
+    for comp_user in user_data['admin_user']:
+        if chat_id not in comp_user.values():
+            continue
+        else:
+            flag = True
+            return flag
+
+    return flag
+
+
 def server_send_telegram(data):
     try:
         config = get_config()
@@ -16,11 +28,10 @@ def server_send_telegram(data):
         user_data = get_user()
         for i in user_data['user']:
             chat_id = i['chat_id']
-            print(chat_id)
             telegram_send_message_url(chat_id, config, content, url)
-        print("data send success")
+        logging.info("data send success")
     except Exception as e:
-        print(e)
+        logging.info(e)
     pass
 
 
@@ -31,9 +42,9 @@ def server_notice_echo(data):
         for i in user_data['user']:
             chat_id = i['chat_id']
             telegram_send_message(chat_id, config, data)
-        print("data send success")
+        logging.info("data send success")
     except Exception as e:
-        print(e)
+        logging.info(e)
     pass
 
 
@@ -44,30 +55,32 @@ def parser(firstrun):
     
     if os.path.exists("../data/dormitory.json"):
         stored_data = get_dormitory()
-        print("json load success...")
+        logging.info("json load success...")
+        if firstrun == True:
+            return
 
-    print("parser start...")
+    logging.info("parser start...")
 
     for page_num in page:
         current_data = current_data + content_get_list(str(page_num))
         time.sleep(randint(1, 3))
 
-    print("parser end...")
+    logging.info("parser end...")
 
-    print("compare start...")
+    logging.info("compare start...")
 
     for c_data in current_data:
         if c_data not in stored_data:
             server_send_telegram(c_data)
-            print("send_telegram success waiting 3sec...")
+            logging.info("send_telegram success waiting 3sec...")
             time.sleep(3)
 
-    print("compare end waiting 10sec...")
+    logging.info("compare end waiting 10sec...")
     time.sleep(10)
     
-    print("dormitory.json dump start...")
+    logging.info("dormitory.json dump start...")
     json.dump(current_data, open("../data/dormitory.json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
-    print("dump end...")
+    logging.info("dump end...")
 
 
 def main():
@@ -76,7 +89,6 @@ def main():
     time.sleep(10)
 
 if __name__ == "__main__":
-    #while True:
-    #    main()
-    #    time.sleep(randint(500, 600))
-    main()
+    while True:
+        main()
+        time.sleep(randint(500, 600))

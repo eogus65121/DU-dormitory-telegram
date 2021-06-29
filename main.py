@@ -18,7 +18,6 @@ from telegram.ext import (
     MessageHandler,
     Filters,
     ConversationHandler,
-    PicklePersistence,
     CallbackQueryHandler,
     CallbackContext,
 )
@@ -75,6 +74,7 @@ def notice_task(update:Update, context: CallbackContext) -> int:
     reply_text = "전체공지 기능입니다. 내용 입력 시 모든 사용자에게 전송됩니다."
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
 
+# 관리자 관리하기 기능
 def adm_manage_func(update:Update, context: CallbackContext) -> int:
     Keyboard = [
         [
@@ -88,10 +88,43 @@ def adm_manage_func(update:Update, context: CallbackContext) -> int:
     return ACTION
     
 
-def add_id_check(update:Update, context: CallbackContext) -> int:
-    user_id = update.message.text
-    reply_text = "추가를 원하는 id가 " + str(user_id) + "맞습니까? \n YES = 추가하기 // NO = 처음으로(/task 명령부터 재실행)"
-    update.message.reply_text(reply_text, reply_markup=markup_YS)
+def add(update:Update, context: CallbackContext) -> int:
+    reply_text = "관리자 추가하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+    
+def add_ing(update:Update, context: CallbackContext) -> int:
+    user_text = update.message.text
+    admin_data = get_admin()
+
+    if check_admin(user_text ,admin_data):
+        context.bot.send_message(chat_id=update.effective_chat.id, text="해당 관리자가 존재합니다, 기능 종료")
+    else:
+        admin_data['admin_user'].append({"chat_id":int(user_text)})
+        json.dump(admin_data, open("../data/admin_user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
+        logging.info("admin_data dump success...")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="추가완료, 기능 종료")
+    
+    return ConversationHandler.END
+
+
+#def delete(update:Update, context:CallbackContext) -> int:
+#    reply_text = "관리자 삭제하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
+#    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+
+
+#def delete_ing(update:Update, context: CallbackContext) -> int:
+#    user_text = update.message.text
+#    admin_data = get_admin()
+
+    #if check_admin(user_text ,admin_data):
+    #    admin_data['admin_user'].replace(user_text, "")
+    #    json.dump(admin_data, open("../data/admin_user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
+    #    logging.info("admin_data dump success...")
+    #    context.bot.send_message(chat_id=update.effective_chat.id, text="제거완료, 기능 종료")
+    #else:
+    #    context.bot.send_message(chat_id=update.effective_chat.id, text="해당 관리자가 존재하지 않습니다, 기능 종료")
+    
+   # return ConversationHandler.END
 
 
 # def add_admin(update:Update, context:CallbackContext, data) -> int:
@@ -217,10 +250,12 @@ def main():
                 MessageHandler(Filters.regex('^종료$'), done)
             ],
             ADD:[
-                MessageHandler(Filters.regex('^전체공지$'), notice_task)
+                MessageHandler(Filters.regex('^추가$'), add),
+                MessageHandler(Filters.text & ~Filters.command, add_ing)
             ],
             DELETE:[
-
+                MessageHandler(Filters.regex('^삭제$'), delete),
+                MessageHandler(Filters.text & ~Filters.command, delete_ing)
             ]
         },
         fallbacks=[MessageHandler(Filters.regex('^종료$'), done)]

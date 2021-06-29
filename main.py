@@ -76,6 +76,8 @@ def task(update:Update, context: CallbackContext) -> int:
         context.bot.send_message(chat_id=update.effective_chat.id, text = reply_text2)
         return ConversationHandler.END
 
+
+# 종류별 action 지정
 def action(update:Update, context:CallbackContext):
     query = update.callback_query
     chat_id = query.message.chat_id

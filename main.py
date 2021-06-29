@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from os import name
 import time
 import json

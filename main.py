@@ -30,7 +30,6 @@ reply_func = [['기능선택']]
 reply_add = [['추가']]
 reply_delete = [['삭제']]
 
-
 markup_start = ReplyKeyboardMarkup(reply_start, one_time_keyboard=True)
 markup_func_noti = ReplyKeyboardMarkup(task_func_noti, one_time_keyboard=True)
 markup_func_adm_manage = ReplyKeyboardMarkup(task_func_adm_manage, one_time_keyboard=True)
@@ -79,7 +78,7 @@ def adm_manage_func(update:Update, context: CallbackContext) -> int:
     Keyboard = [
         [
         InlineKeyboardButton("추가", callback_data='ADD'),
-        InlineKeyboardButton("제거", callback_data='DELETE'),
+        InlineKeyboardButton("삭제", callback_data='DELETE'),
         ],
         [InlineKeyboardButton("종료", callback_data='FUN_END')]
     ]
@@ -107,30 +106,28 @@ def add_ing(update:Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
-#def delete(update:Update, context:CallbackContext) -> int:
-#    reply_text = "관리자 삭제하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
-#    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+def delete(update:Update, context:CallbackContext) -> int:
+    reply_text = "관리자 삭제하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
+    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
 
 
-#def delete_ing(update:Update, context: CallbackContext) -> int:
-#    user_text = update.message.text
-#    admin_data = get_admin()
-
-    #if check_admin(user_text ,admin_data):
-    #    admin_data['admin_user'].replace(user_text, "")
-    #    json.dump(admin_data, open("../data/admin_user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
-    #    logging.info("admin_data dump success...")
-    #    context.bot.send_message(chat_id=update.effective_chat.id, text="제거완료, 기능 종료")
-    #else:
-    #    context.bot.send_message(chat_id=update.effective_chat.id, text="해당 관리자가 존재하지 않습니다, 기능 종료")
+def delete_ing(update:Update, context: CallbackContext) -> int:
+    user_text = int(update.message.text)
+    admin_data = get_admin()
+    if check_admin(user_text ,admin_data):
+        for i in admin_data['admin_user']:
+            if user_text == i['chat_id']:
+                admin_data['admin_user'].remove(i)
+                break
+        
+        json.dump(admin_data, open("../data/admin_user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
+        logging.info("admin_data dump success...")
+        context.bot.send_message(chat_id=update.effective_chat.id, text="제거완료, 기능 종료")
     
-   # return ConversationHandler.END
-
-
-# def add_admin(update:Update, context:CallbackContext, data) -> int:
-#     admin_data = get_admin()
-#     admin_data['admin_user'].append({"chat_id":data})
-#     json.dump(admin_data, open("../data/user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
+    else:
+        context.bot.send_message(chat_id=update.effective_chat.id, text="해당 관리자가 존재하지 않습니다, 기능 종료")
+    
+    return ConversationHandler.END
 
 
 # 관리자 기능 실행

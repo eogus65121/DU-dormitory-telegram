@@ -19,6 +19,7 @@ from telegram.ext import (
 
 CHOOSING, ACTION, NOTI_FUNC, ADM_MANAGE, FUN_END, ADD, DELETE = range(7)
 
+
 # 공지 echo 메시지 전송
 def echo_notice(update:Update, context: CallbackContext) -> int:
     user_text = update.message.text
@@ -27,10 +28,12 @@ def echo_notice(update:Update, context: CallbackContext) -> int:
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
     return ConversationHandler.END
 
+
 # 공지 기능 시작
 def notice_task(update:Update, context: CallbackContext) -> int:
     reply_text = "전체공지 기능입니다. 내용 입력 시 모든 사용자에게 전송됩니다."
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
+
 
 # 관리자 관리하기 기능
 def adm_manage_func(update:Update, context: CallbackContext) -> int:
@@ -45,11 +48,14 @@ def adm_manage_func(update:Update, context: CallbackContext) -> int:
     update.message.reply_text("기능을 선택해주세요", reply_markup=reply_markup)
     return ACTION
     
-    
+
+# 관리자 추가    
 def add(update:Update, context: CallbackContext) -> int:
     reply_text = "관리자 추가하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
-    
+
+
+# 관리자 추가 진행
 def add_ing(update:Update, context: CallbackContext) -> int:
     user_text = update.message.text
     admin_data = get_admin()
@@ -65,11 +71,13 @@ def add_ing(update:Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+# 관리자 삭제
 def delete(update:Update, context:CallbackContext) -> int:
     reply_text = "관리자 삭제하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
     context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
 
 
+#관리자 삭제 진행
 def delete_ing(update:Update, context: CallbackContext) -> int:
     user_text = int(update.message.text)
     admin_data = get_admin()
@@ -89,6 +97,7 @@ def delete_ing(update:Update, context: CallbackContext) -> int:
     return ConversationHandler.END
 
 
+# 관리자 기능 선택
 def func_choice(update:Update, context:CallbackContext) ->None :
     Keyboard = [
         [
@@ -102,9 +111,7 @@ def func_choice(update:Update, context:CallbackContext) ->None :
     return ACTION
 
 
-##############################################################
-
-
+# 관리자 명단에서 관리자 확인
 def check_admin(chat_id, user_data):
     flag = False
     for comp_user in user_data['admin_user']:
@@ -116,7 +123,7 @@ def check_admin(chat_id, user_data):
 
     return flag
 
-
+#텔레그램 전송
 def server_send_telegram(data):
     try:
         config = get_config()
@@ -132,6 +139,7 @@ def server_send_telegram(data):
     pass
 
 
+# 모든 인원에게 데이터 전송
 def server_notice_echo(data):
     try:
         config = get_config()
@@ -145,6 +153,7 @@ def server_notice_echo(data):
     pass
 
 
+# 기숙사 게시판 파싱 및 전송 코드
 def parser(firstrun):
     page = [32, 33, 29]
     config = get_config()

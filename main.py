@@ -60,76 +60,6 @@ def check_user(chat_id, user_data):
 
     return flag
 
-# 공지 echo 메시지 전송
-def echo_notice(update:Update, context: CallbackContext) -> int:
-    user_text = update.message.text
-    server_notice_echo(user_text)
-    reply_text="전송완료, 기능 종료"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
-    return ConversationHandler.END
-
-# 공지 기능 시작
-def notice_task(update:Update, context: CallbackContext) -> int:
-    reply_text = "전체공지 기능입니다. 내용 입력 시 모든 사용자에게 전송됩니다."
-    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
-
-# 관리자 관리하기 기능
-def adm_manage_func(update:Update, context: CallbackContext) -> int:
-    Keyboard = [
-        [
-        InlineKeyboardButton("추가", callback_data='ADD'),
-        InlineKeyboardButton("삭제", callback_data='DELETE'),
-        ],
-        [InlineKeyboardButton("종료", callback_data='FUN_END')]
-    ]
-    reply_markup = InlineKeyboardMarkup(Keyboard)
-    update.message.reply_text("기능을 선택해주세요", reply_markup=reply_markup)
-    return ACTION
-    
-
-def add(update:Update, context: CallbackContext) -> int:
-    reply_text = "관리자 추가하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
-    
-def add_ing(update:Update, context: CallbackContext) -> int:
-    user_text = update.message.text
-    admin_data = get_admin()
-
-    if check_admin(user_text ,admin_data):
-        context.bot.send_message(chat_id=update.effective_chat.id, text="해당 관리자가 존재합니다, 기능 종료")
-    else:
-        admin_data['admin_user'].append({"chat_id":int(user_text)})
-        json.dump(admin_data, open("../data/admin_user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
-        logging.info("admin_data dump success...")
-        context.bot.send_message(chat_id=update.effective_chat.id, text="추가완료, 기능 종료")
-    
-    return ConversationHandler.END
-
-
-def delete(update:Update, context:CallbackContext) -> int:
-    reply_text = "관리자 삭제하기 기능입니다. id를 입력하시면 관리자 목록에 추가됩니다. \n (주의) id는 숫자만 입력할 것"
-    context.bot.send_message(chat_id=update.effective_chat.id, text=reply_text)
-
-
-def delete_ing(update:Update, context: CallbackContext) -> int:
-    user_text = int(update.message.text)
-    admin_data = get_admin()
-    if check_admin(user_text ,admin_data):
-        for i in admin_data['admin_user']:
-            if user_text == i['chat_id']:
-                admin_data['admin_user'].remove(i)
-                break
-        
-        json.dump(admin_data, open("../data/admin_user.json", "w", encoding='utf-8'), ensure_ascii=False, indent=4)
-        logging.info("admin_data dump success...")
-        context.bot.send_message(chat_id=update.effective_chat.id, text="제거완료, 기능 종료")
-    
-    else:
-        context.bot.send_message(chat_id=update.effective_chat.id, text="해당 관리자가 존재하지 않습니다, 기능 종료")
-    
-    return ConversationHandler.END
-
-
 # 관리자 기능 실행
 def task(update:Update, context: CallbackContext) -> int:
     reply_text1 = "관리자 기능입니다."
@@ -145,7 +75,6 @@ def task(update:Update, context: CallbackContext) -> int:
         reply_text2 = "관리자가 아닙니다. 해당 기능을 종료합니다."
         context.bot.send_message(chat_id=update.effective_chat.id, text = reply_text2)
         return ConversationHandler.END
-
 
 def action(update:Update, context:CallbackContext):
     query = update.callback_query
@@ -171,19 +100,6 @@ def action(update:Update, context:CallbackContext):
         reply_text = "하단 삭제 버튼을 눌러주세요"
         context.bot.send_message(chat_id=chat_id, text =reply_text, reply_markup=markup_delete)
         return DELETE
-
-# 관리자 기능 선택
-def func_choice(update:Update, context:CallbackContext) ->None :
-    Keyboard = [
-        [
-        InlineKeyboardButton("전체공지", callback_data='NOTI_FUNC'),
-        InlineKeyboardButton("관리자 관리", callback_data='ADM_MANAGE'),
-        ],
-        [InlineKeyboardButton("종료", callback_data='FUN_END')]
-    ]
-    reply_markup = InlineKeyboardMarkup(Keyboard)
-    update.message.reply_text("기능을 선택해주세요", reply_markup=reply_markup)
-    return ACTION
 
 
 # conversation handler 종료

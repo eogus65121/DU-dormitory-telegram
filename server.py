@@ -157,7 +157,7 @@ def server_notice_echo(data):
 
 # 기숙사 게시판 파싱 및 전송 코드
 def parser(firstrun):
-    page = [32, 33, 29] # 32, 33 = 행정실(관리자에게만 전송), 29, 30 = 비호 자치회(모든 사용자에게 전송)
+    page = [32, 33, 29, 30] # 32, 33 = 행정실(관리자에게만 전송), 29, 30 = 비호 자치회(모든 사용자에게 전송)
     config = get_config()
     current_data = []
     

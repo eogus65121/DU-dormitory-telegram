@@ -12,6 +12,7 @@ headers = {
     "Accept-Charset": "application/x-www-form-urlencoded; charset=UTF-8",
 }
 
+# 파싱 코드
 def content_get_list(page):
     # 공지사항 링크 url
     link = "https://dorm.daegu.ac.kr/hakgwa_home/dorm/mobile/sub.php"

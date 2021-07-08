@@ -40,7 +40,6 @@ markup_func = ReplyKeyboardMarkup(reply_func, one_time_keyboard=True)
 markup_add = ReplyKeyboardMarkup(reply_add, one_time_keyboard=True)
 markup_delete = ReplyKeyboardMarkup(reply_delete, one_time_keyboard=True)
 
-#CHOOSING, NOTI_FUNC, ADD_ADMIN = range(3)
 CHOOSING, ACTION, NOTI_FUNC, ADM_MANAGE, FUN_END, ADD, DELETE = range(7)
 
 # telegram bot 첫 시작 /start command handler

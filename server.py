@@ -19,6 +19,7 @@ from telegram.ext import (
     CallbackContext,
 )
 
+# conversation handler list
 CHOOSING, ACTION, NOTI_FUNC, ADM_MANAGE, FUN_END, ADD, DELETE = range(7)
 
 

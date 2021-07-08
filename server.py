@@ -127,15 +127,40 @@ def check_admin(chat_id, user_data):
     return flag
 
 #텔레그램 전송
-def server_send_telegram(data):
+# def server_send_telegram(data):
+#    try:
+#        config = get_config()
+#        content = data[0]
+#        url = data[1]
+#        user_data = get_user()
+#        for i in user_data['user']:
+#            chat_id = i['chat_id']
+#            telegram_send_message_url(chat_id, config, content, url)
+#        logging.info("data send success")
+#    except Exception as e:
+#        logging.info(e)
+#    pass
+
+
+def server_send_telegram(data, flag):
     try:
         config = get_config()
-        content = data[0]
-        url = data[1]
-        user_data = get_user()
-        for i in user_data['user']:
-            chat_id = i['chat_id']
-            telegram_send_message_url(chat_id, config, content, url)
+
+        if flag == True:
+            user_data = get_user()
+            user_content = data[0]
+            user_url = data[1]
+            for i in user_data['user']:
+                chat_id = i['chat_id']
+                telegram_send_message_url(chat_id, config, user_content, user_url)            
+        else:
+            admin_data = get_admin()
+            admin_content = data[0]
+            admin_url = data[1]
+            for j in admin_data['admin_user']:
+                chat_id = j['chat_id']
+                telegram_send_message_url(chat_id, config, admin_content, admin_url)
+
         logging.info("data send success")
     except Exception as e:
         logging.info(e)
@@ -158,38 +183,72 @@ def server_notice_echo(data):
 
 # 기숙사 게시판 파싱 및 전송 코드
 def parser(firstrun):
-    page = [32, 33, 29, 30] # 32, 33 = 행정실(관리자에게만 전송), 29, 30 = 비호 자치회(모든 사용자에게 전송)
+    page = [32, 33, 29, 30]  # 32, 33 = 행정실(관리자에게만 전송), 29, 30 = 비호 자치회(모든 사용자에게 전송)
     config = get_config()
     current_data = []
-    
+    dump_data = {
+        "user":[],
+        "admin":[]
+    }
+
     if os.path.exists("../data/dormitory.json"):
         stored_data = get_dormitory()
         logging.info("json load success...")
+        print("json load success...")
         if firstrun == True:
             return
 
     logging.info("parser start...")
+    print("parser start...")
+
+    #for page_num in page:
+    #    current_data = current_data + content_get_list(str(page_num))
+    #    time.sleep(randint(1, 3))
 
     for page_num in page:
-        current_data = current_data + content_get_list(str(page_num))
-        time.sleep(randint(1, 3))
+        if page_num == 32 or page_num == 33:
+            dump_data["admin"]  = dump_data["admin"] + content_get_list(str(page_num))
+            time.sleep(randint(1,3))
+        else:
+            dump_data["user"]  = dump_data["user"] + content_get_list(str(page_num))
+            time.sleep(randint(1,3))
 
     logging.info("parser end...")
+    print("parser end...")
 
     logging.info("compare start...")
+    print("compare start...")
 
-    for c_data in current_data:
-        if c_data not in stored_data:
-            server_send_telegram(c_data)
-            logging.info("send_telegram success waiting 3sec...")
+    # for c_data in current_data:
+    #    if c_data not in stored_data:
+    #        server_send_telegram(c_data)
+    #        logging.info("send_telegram success waiting 3sec...")
+    #        time.sleep(3)
+
+    for c_data in dump_data['admin']:
+        if c_data not in stored_data['admin']:
+            server_send_telegram(c_data, flag = False)
+            logging.info("admin content send_telegram success waiting 3sec...")
+            print("admin content send_telegram success waiting 3sec...")
             time.sleep(3)
 
+    for c_data in dump_data['user']:
+        if c_data not in stored_data['user']:
+            server_send_telegram(c_data, flag = True)
+            logging.info("user content send_telegram success waiting 3sec...")
+            print("user content send_telegram success waiting 3sec...")
+            time.sleep(3)
+
+
     logging.info("compare end waiting 10sec...")
+    print("compare end waiting 10sec...")
     time.sleep(10)
     
     logging.info("dormitory.json dump start...")
-    json.dump(current_data, open("../data/dormitory.json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
+    print("dump")
+    json.dump(dump_data, open("../data/dormitory.json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
     logging.info("dump end...")
+    print("dump end...")
 
 
 def main():
@@ -198,6 +257,6 @@ def main():
     time.sleep(10)
 
 if __name__ == "__main__":
-    while True:
+    #while True:
         main()
-        time.sleep(randint(500, 600))
+        #time.sleep(randint(500, 600))

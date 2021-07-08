@@ -127,22 +127,7 @@ def check_admin(chat_id, user_data):
     return flag
 
 #텔레그램 전송
-# def server_send_telegram(data):
-#    try:
-#        config = get_config()
-#        content = data[0]
-#        url = data[1]
-#        user_data = get_user()
-#        for i in user_data['user']:
-#            chat_id = i['chat_id']
-#            telegram_send_message_url(chat_id, config, content, url)
-#        logging.info("data send success")
-#    except Exception as e:
-#        logging.info(e)
-#    pass
-
-
-def server_send_telegram(data, flag):
+def server_send_telegram(data, flag): #flag 값에 따른 admin, user 내용 전송 차이
     try:
         config = get_config()
 
@@ -194,16 +179,10 @@ def parser(firstrun):
     if os.path.exists("../data/dormitory.json"):
         stored_data = get_dormitory()
         logging.info("json load success...")
-        print("json load success...")
         if firstrun == True:
             return
 
     logging.info("parser start...")
-    print("parser start...")
-
-    #for page_num in page:
-    #    current_data = current_data + content_get_list(str(page_num))
-    #    time.sleep(randint(1, 3))
 
     for page_num in page:
         if page_num == 32 or page_num == 33:
@@ -214,41 +193,28 @@ def parser(firstrun):
             time.sleep(randint(1,3))
 
     logging.info("parser end...")
-    print("parser end...")
 
     logging.info("compare start...")
-    print("compare start...")
-
-    # for c_data in current_data:
-    #    if c_data not in stored_data:
-    #        server_send_telegram(c_data)
-    #        logging.info("send_telegram success waiting 3sec...")
-    #        time.sleep(3)
 
     for c_data in dump_data['admin']:
         if c_data not in stored_data['admin']:
             server_send_telegram(c_data, flag = False)
             logging.info("admin content send_telegram success waiting 3sec...")
-            print("admin content send_telegram success waiting 3sec...")
             time.sleep(3)
 
     for c_data in dump_data['user']:
         if c_data not in stored_data['user']:
             server_send_telegram(c_data, flag = True)
             logging.info("user content send_telegram success waiting 3sec...")
-            print("user content send_telegram success waiting 3sec...")
             time.sleep(3)
 
 
     logging.info("compare end waiting 10sec...")
-    print("compare end waiting 10sec...")
     time.sleep(10)
     
     logging.info("dormitory.json dump start...")
-    print("dump")
     json.dump(dump_data, open("../data/dormitory.json", "w", encoding="utf-8"), ensure_ascii=False, indent=4)
     logging.info("dump end...")
-    print("dump end...")
 
 
 def main():

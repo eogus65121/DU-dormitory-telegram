@@ -25,9 +25,12 @@ def content_get_list(page):
 
         content_list = []
 
+        str_title = bs.select('section.categoryTxt > ul > li')
+        title = '[' + str_title[1].get_text() + ']' + '\n'
+
         # 공지사항 데이터 파싱
         for i in bs.find_all('td', class_='subject'):
-            content_title = str(i.get_text().strip())
+            content_title = title + str(i.get_text().strip())
             content_link = link + str(i.find('a').get('href'))
             content_list.append([content_title, content_link])
         
